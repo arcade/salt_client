@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+
+require "salt_client"
+require "optparse"
+
+options = {}
+
+parser = OptionParser.new do |opts|
+  opts.banner = "Usage: salt.rb [options] command target args"
+
+  opts.on('-s', '--server SERVER', String, 'The saltstack master to call') do |server|
+    options[:server] = server
+  end
+
+  opts.on('-u', '--user USERNAME', String, 'The user to authenticate with') do |user|
+    options[:user] = user
+  end
+
+  opts.on('-p', '--pass PASSWORD', String, 'The password to authenticate with') do |pass|
+    options[:pass] = pass
+  end
+end
+
+begin
+  parser.parse!
+  mandatory = [:server, :user, :pass]
+  missing = mandatory.select{ |param| options[param].nil? }
+  unless missing.empty?
+    puts "Missing options: #{missing.join(', ')}"
+    puts ""
+    puts parser
+    exit
+  end
+
+  if ARGV.length < 3
+    puts parser
+    exit
+  end
+rescue OptionParser::InvalidOption, OptionParser::MissingArgument
+  puts $!.to_s
+  puts ""
+  puts parser
+  exit
+end
+
+c = SaltClient::Client.new options[:server], options[:user], options[:pass]
+response = c.call ARGV[0], ARGV[1], ARGV[2]
+
+response.each do |server, reply|
+  puts "#{server} => #{reply}"
+end
