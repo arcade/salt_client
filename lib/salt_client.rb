@@ -1,5 +1,8 @@
 require 'unirest'
 
+# set the unirest timeout to 5 minutes
+Unirest.timeout(300)
+
 module SaltClient
   class Client
     def initialize(server, user, pass)
