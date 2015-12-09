@@ -16,7 +16,7 @@ module SaltClient
         }
 
       if response.code != 200
-        abort("Could not login to the salt master")
+        raise("Could not login to the salt master")
       end
 
       @token = response.body.fetch("return")[0]["token"]
@@ -36,7 +36,7 @@ module SaltClient
         }
 
       if response.code != 200
-        abort("Something went wrong when calling your method")
+        raise("Something went wrong when calling your method")
       end
 
       response.body["return"][0]
