@@ -23,17 +23,19 @@ module SaltClient
     end
 
     def call(target, function, arguments)
+      parameters = {
+        client: "local",
+        tgt: target,
+        fun: function
+      }
+      parameters[:arg] = arguments if arguments
+
       response = Unirest.post @server,
         headers: {
           "Accept": "application/json",
           "X-Auth-Token": @token
         },
-        parameters: {
-          :client => "local",
-          :tgt => target,
-          :fun => function,
-          :arg => arguments
-        }
+        parameters: parameters
 
       if response.code != 200
         abort("Something went wrong when calling your method")
