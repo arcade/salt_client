@@ -35,13 +35,7 @@ module SaltClient
           "Accept": "application/json",
           "X-Auth-Token": @token
         },
-        parameters: {
-          :client => "local",
-          :tgt => target,
-          :fun => function,
-          :arg => arguments,
-          :expr_form => "grain"
-        }
+        parameters: parameters
 
       if response.code != 200
         raise("Something went wrong when calling your method")
