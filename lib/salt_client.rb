@@ -16,13 +16,20 @@ module SaltClient
         }
 
       if response.code != 200
-        abort("Could not login to the salt master")
+        raise("Could not login to the salt master")
       end
 
       @token = response.body.fetch("return")[0]["token"]
     end
 
     def call(target, function, arguments)
+      parameters = {
+        client: "local",
+        tgt: target,
+        fun: function
+      }
+      parameters[:arg] = arguments if arguments
+
       response = Unirest.post @server,
         headers: {
           "Accept": "application/json",
@@ -37,7 +44,7 @@ module SaltClient
         }
 
       if response.code != 200
-        abort("Something went wrong when calling your method")
+        raise("Something went wrong when calling your method")
       end
 
       response.body["return"][0]
