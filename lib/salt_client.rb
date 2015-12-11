@@ -32,7 +32,8 @@ module SaltClient
           :client => "local",
           :tgt => target,
           :fun => function,
-          :arg => arguments
+          :arg => arguments,
+          :expr_form => "grain"
         }
 
       if response.code != 200
